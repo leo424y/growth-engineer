@@ -1,157 +1,155 @@
-写一个博客
+寫一個部落格
 ===
 
-过去曾经写过一系列的文章，试图去鼓励更多的人去写文章。从毕业前的《[成为笔杆子](https://www.phodal.com/blog/think-of-rework-be-a-writer/)》、《[写作驱动学习
-](https://www.phodal.com/blog/write-driven-learning/)》、《[重新思考博客的意义
-](https://www.phodal.com/blog/rethink-why-write-blog/)》，到工作后的《[如何提高影响力](https://www.phodal.com/blog/how-to-improve-impact/)》，都在试图去向人们展示写博客的可以促进自己学习、提高自己的影响力。
+過去曾經寫過一系列的文章，試圖去鼓勵更多的人去寫文章。從畢業前的《[成為筆桿子](https://www.phodal.com/blog/think-of-rework-be-a-writer/)》、《[寫作驅動學習
+](https://www.phodal.com/blog/write-driven-learning/)》、《[重新思考部落格的意義
+](https://www.phodal.com/blog/rethink-why-write-blog/)》，到工作後的《[如何提高影響力](https://www.phodal.com/blog/how-to-improve-impact/)》，都在試圖去向人們展示寫部落格的可以促進自己學習、提高自己的影響力。
 
-等到工作以后，发现想写的人是没有时间，不想写的人不存在时间。人们陷入生活的怪圈，越是加班越没有时间学技术，越是没有时间学技术越是需要加班。
+等到工作以後，發現想寫的人是沒有時間，不想寫的人不存在時間。人們陷入生活的怪圈，越是加班越沒有時間學技術，越是沒有時間學技術越是需要加班。
 
-我尚不属于那些技术特别好的人——我只是广度特别广，从拿电烙铁到所谓的大数据。不过相比于所谓的大数据，我想我更擅长于焊电路板，笑~~。由于并非毕业于计算机专业，毕业前的实习过程中，我发现在某些特殊领域的技术比不上科班毕业的人，这意味着需要更多的学习。但是后来受益于工作近两年来从没有加班过，朝九晚六的生活带来了大量的学习时间。在这个漫长的追赶过程中，我发现开发博客相关的应用带来了很大的进步。
+我尚不屬於那些技術特別好的人——我只是廣度特別廣，從拿電烙鐵到所謂的大資料。不過相比於所謂的大資料，我想我更擅長於焊電路板，笑~~。由於並非畢業於計算機專業，畢業前的實習過程中，我發現在某些特殊領域的技術比不上科班畢業的人，這意味著需要更多的學習。但是後來受益於工作近兩年來從沒有加班過，朝九晚六的生活帶來了大量的學習時間。在這個漫長的追趕過程中，我發現開發部落格相關的應用帶來了很大的進步。
 
-我的博客
+我的部落格
 ---
 
-### 现在，我的博客是如何工作的？
+### 現在，我的部落格是如何工作的？
 
-#### HTTP服务器
+#### HTTP伺服器
 
-当你开发在网页上访问我的博客的时候，你可能会注意到上面的协议是HTTPS。
+當你開發在網頁上訪問我的部落格的時候，你可能會注意到上面的協議是HTTPS。
 
 ![blog-mobile][1]
 
-但是并不会察觉到它是HTTP2.0。而这需要一个可以支持HTTP2.0的HTTP服务器，在不改变现在程序配置的情况下，你需要重新编译你的HTTP服务器。在这里，我的博客用的是Nginx，所以它在还只是试验版的时候，就已经被编译进去了。为了隐藏服务器的版本，还需要在编译的时候做了些手脚。除此，为了浏览器上的那个小绿锁，我们还需要一个HTTPS证书，并在Nginx上配置它。
+但是並不會察覺到它是HTTP2.0。而這需要一個可以支援HTTP2.0的HTTP伺服器，在不改變現在程式配置的情況下，你需要重新編譯你的HTTP伺服器。在這裡，我的部落格用的是Nginx，所以它在還只是試驗版的時候，就已經被編譯進去了。為了隱藏伺服器的版本，還需要在編譯的時候做了些手腳。除此，為了瀏覽器上的那個小綠鎖，我們還需要一個HTTPS證書，並在Nginx上配置它。
 
-在这时，我们还需要配置一个缓存服务器。过去，我在上面用过Varinsh、Nginx Cache。尽管对于个人博客来说，可能意义不是很大，但是总需要去尝试。于是用到了ngx_pagespeed，它会帮我们做很多事，从合并CSS、JS，到转图片转为webp格式等等。
+在這時，我們還需要配置一個快取伺服器。過去，我在上面用過Varinsh、Nginx Cache。儘管對於個人部落格來說，可能意義不是很大，但是總需要去嘗試。於是用到了ngx_pagespeed，它會幫我們做很多事，從合併CSS、JS，到轉圖片轉為webp格式等等。
 
-Nginx对请求转发给了某个端口，就来到了WSGI。
- 
+Nginx對請求轉發給了某個埠，就來到了WSGI。
+
 #### WSGI
 
-接着，我们就来到了Web服务器网关接口——是为Python语言定义的Web服务器和Web应用程序或框架之间的一种简单而通用的接口。现在，你或许已经知道了这个博客是基于Python语言的框架。但是在我们揭晓这个答案之前，我们还需要介绍个小工具——New Relic。如果你在Chrome浏览器上使用Ghosty插件，你就会看到下面的东西。
+接著，我們就來到了Web伺服器閘道器介面——是為Python語言定義的Web伺服器和Web應用程式或框架之間的一種簡單而通用的介面。現在，你或許已經知道了這個部落格是基於Python語言的框架。但是在我們揭曉這個答案之前，我們還需要介紹個小工具——New Relic。如果你在Chrome瀏覽器上使用Ghosty外掛，你就會看到下面的東西。
 
 ![New Relic][2]
 
-New Relic是一个网站监测工具，Google Analytics是一个分析工具。但是，不一样的是New Relic需要在我们启动的时候加进去：
+New Relic是一個網站監測工具，Google Analytics是一個分析工具。但是，不一樣的是New Relic需要在我們啟動的時候加進去：
 
 ```
-nohup /PATH/bin/newrelic-admin run-program /PATH/bin/gunicorn --workers=2 MK_dream.wsgi -b 0.0.0.0:8080 --timeout=300& 
+nohup /PATH/bin/newrelic-admin run-program /PATH/bin/gunicorn --workers=2 MK_dream.wsgi -b 0.0.0.0:8080 --timeout=300&
 ```
 
-现在这个请求总算来到了8080端口，接着到了Gunicorn的世界里，它是一个高效的Python WSGI Server。
+現在這個請求總算來到了8080埠，接著到了Gunicorn的世界裡，它是一個高效的Python WSGI Server。
 
-过了上面几步这个请求终于交给了Django。
+過了上面幾步這個請求終於交給了Django。
 
 #### Django
 
-Django这个天生带Admin的Web框架，就是适合CMS和博客。这并不意味着它的工作范围只限于此，它还有这么多用户:
+Django這個天生帶Admin的Web框架，就是適合CMS和部落格。這並不意味著它的工作範圍只限於此，它還有這麼多使用者:
 
 ![Who Use Django][3]
 
-请求先到了Django的URL层，这个请求接着交给了View层来处理，View层访问Model层以后，与Template层一起渲染出了HTML。Django是一个MTV框架(类似于MVC之于Spring MVC)。接着，HTML先给了浏览器，浏览器继续去请求前端的内容。
+請求先到了Django的URL層，這個請求接著交給了View層來處理，View層訪問Model層以後，與Template層一起渲染出了HTML。Django是一個MTV框架(類似於MVC之於Spring MVC)。接著，HTML先給了瀏覽器，瀏覽器繼續去請求前端的內容。
 
 它也可以用Farbic部署哦~~。
 
 #### Angluar & Material Design Lite vs Bootstrap & jQuery Mobile
 
-这是一个现代浏览器的前端战争。最开始，博客的前端是Bootstrap框架主导的UI，而移动端是jQuery Mobile做的(PS: Mezzanine框架原先的结构)。
+這是一個現代瀏覽器的前端戰爭。最開始，部落格的前端是Bootstrap框架主導的UI，而移動端是jQuery Mobile做的(PS: Mezzanine框架原先的結構)。
 
-接着，在我遇到了Backbone后，响应了下Martin Folwer的**编辑-发布分离模式**。用Node.js与RESTify直接读取博客的数据库做了一个REST API。Backbone就负责了相应的Detail页和List页的处理。
+接著，在我遇到了Backbone後，響應了下Martin Folwer的**編輯-釋出分離模式**。用Node.js與RESTify直接讀取部落格的資料庫做了一個REST API。Backbone就負責了相應的Detail頁和List頁的處理。
 
-尽管这样做的方式可以让用户访问的速度更快，但是我相信没有一个用户会一次性的把技术博客看完。而且我博客流量的主要来源是Google和百度。
+儘管這樣做的方式可以讓使用者訪問的速度更快，但是我相信沒有一個使用者會一次性的把技術部落格看完。而且我部落格流量的主要來源是Google和百度。
 
-然后，我试着用Angular去写一些比较特殊的页面，如[全部文章](https://www.phodal.com/all/)。但是重写的过程并不是很顺畅，这意味着我需要重新考虑页面的渲染方式。
+然後，我試著用Angular去寫一些比較特殊的頁面，如[全部文章](https://www.phodal.com/all/)。但是重寫的過程並不是很順暢，這意味著我需要重新考慮頁面的渲染方式。
 
-最后，出现了Material Design Lite，也就是现在这个丑丑的页面，还不兼容新IE（微信浏览器）。
+最後，出現了Material Design Lite，也就是現在這個醜醜的頁面，還不相容新IE（微信瀏覽器）。
 
-作为一个技术博客，它也用到了HighLight.js的语法加亮。
+作為一個技術部落格，它也用到了HighLight.js的語法加亮。
 
 #### API
 
-在构建SPA的时候，做了一些API，然后就有了一个Auto Sugget的功能：
+在構建SPA的時候，做了一些API，然後就有了一個Auto Sugget的功能：
 
 ![Auto Suggest][4]
 
-或者说，它是一个Auto Complete，可以直接借助于jQuery AutoComplete插件。
+或者說，它是一個Auto Complete，可以直接藉助於jQuery AutoComplete外掛。
 
-或许你已经猜到了，既然我们已经有博客详情页和列表页的API，并且我们也已经有了Auto Suggestion API。那么，我们就可以有一个APP了。
+或許你已經猜到了，既然我們已經有部落格詳情頁和列表頁的API，並且我們也已經有了Auto Suggestion API。那麼，我們就可以有一個APP了。
 
 #### APP
 
-偶然间发现了Ionic框架，它等于 = Angluar + Cordova。于是，在测试Google Indexing的时候，花了一个晚上做了博客的APP。
+偶然間發現了Ionic框架，它等於 = Angluar + Cordova。於是，在測試Google Indexing的時候，花了一個晚上做了部落格的APP。
 
 ![Blog App][5]
 
-我们可以在上面做搜索，搜索的时候也会有Auto Suggestion。上面的注销意味着它有登录功能，而Hybird App的登录通常可以借用于JSON Web Token。即在第一次登录的时候生成一个Token，之后的请求，如发博客、创建事件，都可以用这个Token来进行，直到Token过期。如果你是第一次在手机上访问，也许你会遇到这个没有节操的广告：
+我們可以在上面做搜尋，搜尋的時候也會有Auto Suggestion。上面的登出意味著它有登入功能，而Hybird App的登入通常可以借用於JSON Web Token。即在第一次登入的時候生成一個Token，之後的請求，如發部落格、建立事件，都可以用這個Token來進行，直到Token過期。如果你是第一次在手機上訪問，也許你會遇到這個沒有節操的廣告：
 
 ![Install Phodal Blog App][6]
 
-然并卵，作为我的第七个Hybird应用，它只发布在Google Play上——因为不需要审核。
+然並卵，作為我的第七個Hybird應用，它只發布在Google Play上——因為不需要稽覈。
 
-随后，我意识到了我需要将我的博客推送给读者，但是需要一个渠道。
+隨後，我意識到了我需要將我的部落格推送給讀者，但是需要一個渠道。
 
-###微信公众平台
+###微信公眾平臺
 
-借助于Wechat-Python-SDK，花了一个下午做了一个基础的公众平台。除了可以查询最新的博客和搜索，它的主要作用就是让我发我的博客了。
+藉助於Wechat-Python-SDK，花了一個下午做了一個基礎的公眾平臺。除了可以查詢最新的部落格和搜尋，它的主要作用就是讓我發我的部落格了。
 
 ![Phodal QRCode][7]
 
-对了，如果你用Python写代码，可以试试PyCharm。除了WebStorm以外，我最喜欢的IDE。因为WebStorm一直在与时俱进。
+對了，如果你用Python寫程式碼，可以試試PyCharm。除了WebStorm以外，我最喜歡的IDE。因為WebStorm一直在與時俱進。
 
 
-### 技术组成
+### 技術組成
 
-So，在这个博客里会有三个用户来源，Web > 公众号 > App。
+So，在這個部落格裡會有三個使用者來源，Web > 公眾號 > App。
 
-在网页上，每天大概会400个PV，其中大部分是来自Google、百度，接着就是偶尔推送的公众号，最后就是只有我一个人用的APP。。。
+在網頁上，每天大概會400個PV，其中大部分是來自Google、百度，接著就是偶爾推送的公眾號，最後就是隻有我一個人用的APP。。。
 
-> Web架构
+> Web架構
 
-服务器：
+伺服器：
 
-1. Nginx(含Nginx HTTP 2.0、PageSpeed 插件)
-2. Gunicorn(2 Workers) 
-3. New Relic(性能监测)
+1. Nginx(含Nginx HTTP 2.0、PageSpeed 外掛)
+2. Gunicorn(2 Workers)
+3. New Relic(效能監測)
 
-DevOps: 
+DevOps:
 
-1. Farbic（自动部署）
+1. Farbic（自動部署）
 
-Web应用后台： 
+Web應用後臺：
 
-1. Mezzaine（基于Django的CMS）
-2. REST Framework (API) 
-3. REST Framework JWT (JSON Web Token) 
+1. Mezzaine（基於Django的CMS）
+2. REST Framework (API)
+3. REST Framework JWT (JSON Web Token)
 4. Wechat Python SDK
 5. Mezzanine Pagedown （Markdown
 
-Web应用前台: 
+Web應用前臺:
 
-1. Material Design Lite (用户) 
-2. BootStrap (后台) 
+1. Material Design Lite (使用者)
+2. BootStrap (後臺)
 3. jQuery + jQuery.autocomplete + jquery.githubRepoWidget
-4. HighLight.js 
+4. HighLight.js
 5. Angluar.js
-6. Backbone (已不维护)
+6. Backbone (已不維護)
 
-移动端: 
+移動端:
 
 1. Ionic
 2. Angular + ngCordova
 3. Cordova
 4. highlightjs
-5. showdown.js(Markdown Render) 
+5. showdown.js(Markdown Render)
 6. Angular Messages + Angular-elastic
 
-微信端: 
+微信端:
 
 1. Wechat-Python-SDK
 
-数据分析与收集
+資料分析與收集
 ---
 
 ### Google Analytics & WebMaster
 
 ### APM: New Relic
-
-
